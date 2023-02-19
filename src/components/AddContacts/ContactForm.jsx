@@ -8,20 +8,37 @@ import {
   FormButton,
   Error,
 } from './ContactForm.styled';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from 'redux/contactsSlise/contactsSlice';
 
 let schema = yup.object().shape({
   name: yup.string().required(),
   number: yup.number().required(),
 });
 
-const ContactForm = ({ setContact }) => {
+const ContactForm = () => {
+  const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contacts);
   const initialValues = {
     name: '',
     number: '',
   };
 
   const onSubmitForm = (values, { resetForm }) => {
-    setContact(values);
+    const findName = contacts.find(
+      contact =>
+        contact.text.name === values.name &&
+        contact.text.number === values.number
+    );
+
+    if (findName) {
+      alert(`${values.name} is already in contacts!`);
+      return;
+    } else {
+      alert(`${values.name} successfully added!`);
+    }
+
+    dispatch(addContact(values));
     resetForm();
   };
 

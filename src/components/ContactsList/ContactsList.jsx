@@ -1,3 +1,5 @@
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteContact } from 'redux/contactsSlise/contactsSlice';
 import {
   Contacts,
   ContactsItem,
@@ -6,20 +8,29 @@ import {
   ContactBtnDelete,
 } from './ContactsList.styled';
 
-const ContactsList = ({ contacts, onDeleteContact }) => {
+const ContactsList = () => {
+  const contacts = useSelector(state => state.contacts);
+  const filter = useSelector(state => state.filter);
+  const dispatch = useDispatch();
+
   return (
     <Contacts>
-      {contacts.map(({ id, name, number }) => {
-        return (
-          <ContactsItem key={id}>
-            <ContactsItemName>{name}:</ContactsItemName>
-            <ContactsItemNumber> {number}</ContactsItemNumber>
-            <ContactBtnDelete type="button" onClick={() => onDeleteContact(id)}>
-              Delete
-            </ContactBtnDelete>
-          </ContactsItem>
-        );
-      })}
+      {contacts
+        .filter(contact => contact.text.name.includes(filter))
+        .map(({ id, text }) => {
+          return (
+            <ContactsItem key={id}>
+              <ContactsItemName>{text.name}:</ContactsItemName>
+              <ContactsItemNumber> {text.number}</ContactsItemNumber>
+              <ContactBtnDelete
+                type="button"
+                onClick={() => dispatch(deleteContact(id))}
+              >
+                Delete
+              </ContactBtnDelete>
+            </ContactsItem>
+          );
+        })}
     </Contacts>
   );
 };
