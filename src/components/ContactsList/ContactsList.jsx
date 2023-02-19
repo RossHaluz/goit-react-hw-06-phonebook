@@ -9,28 +9,31 @@ import {
 } from './ContactsList.styled';
 
 const ContactsList = () => {
-  const contacts = useSelector(state => state.contacts);
+  const contacts = useSelector(state => state.contacts.items);
   const filter = useSelector(state => state.filter);
   const dispatch = useDispatch();
 
   return (
     <Contacts>
-      {contacts
-        .filter(contact => contact.text.name.includes(filter))
-        .map(({ id, text }) => {
-          return (
-            <ContactsItem key={id}>
-              <ContactsItemName>{text.name}:</ContactsItemName>
-              <ContactsItemNumber> {text.number}</ContactsItemNumber>
-              <ContactBtnDelete
-                type="button"
-                onClick={() => dispatch(deleteContact(id))}
-              >
-                Delete
-              </ContactBtnDelete>
-            </ContactsItem>
-          );
-        })}
+      {contacts &&
+        contacts
+          .filter(({ text }) =>
+            text.name.toLowerCase().includes(filter.toLowerCase())
+          )
+          .map(({ id, text }) => {
+            return (
+              <ContactsItem key={id}>
+                <ContactsItemName>{text.name}:</ContactsItemName>
+                <ContactsItemNumber> {text.number}</ContactsItemNumber>
+                <ContactBtnDelete
+                  type="button"
+                  onClick={() => dispatch(deleteContact(id))}
+                >
+                  Delete
+                </ContactBtnDelete>
+              </ContactsItem>
+            );
+          })}
     </Contacts>
   );
 };
